@@ -1,14 +1,11 @@
 import mongoose from 'mongoose';
 
-const questionSchema = new mongoose.Schema({
-    text: { type: String, required: true },
-    answerOptions: [{
-        text: { type: String, required: true },
-        id: { type: Number, required: true }
-    }],
-    isSkippingAllowed: { type: Boolean, default: false },
-    numSelections: { type: Number, default: 1 }
+const QuestionSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  answerOptions: [{ id: Number, text: String }],
+  numSelections: Number,
+  isSkippingAllowed: Boolean
 });
 
-const Question = mongoose.model('Question', questionSchema);
+const Question = mongoose.model('Question', QuestionSchema);
 export default Question;

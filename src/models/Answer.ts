@@ -10,5 +10,5 @@ const answerSchema = new mongoose.Schema({
     submittedAt: { type: Date, default: Date.now },
 });
 
-const Answer = mongoose.model('Answer', answerSchema);
-export default Answer;
+const Answer_1 = mongoose.model('Answer', answerSchema);
+export default Answer_1;

@@ -1,4 +1,4 @@
-version: "3.9"
+version: "5.1"
 
 services:
   backend:
@@ -12,8 +12,10 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://localhost:27017/quiez-app
+      - MONGO_URI=mongodb://mongo:27017/quiez-app
     command: npm run dev
+    networks:
+      - anket-app-network
 
   mongo:
     image: mongo:6.0
@@ -23,6 +25,25 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - anket-app-network
+
+  seed_data:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    networks:
+      - anket-app-network
+    command: npm run seed
+    restart: "no"
 
 volumes:
   mongo-data:
+
+networks:
+  anket-app-network: # <-- The network must be defined here
+    driver: bridge

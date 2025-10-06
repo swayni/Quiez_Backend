@@ -6,8 +6,50 @@ import { protect } from '../middlewares/auth';
 
 const router = Router();
 
-// Register
+/**
+ * @openapi
+ * /auth/register:
+ *   post:
+ *     summary: Yeni kullanıcı kaydı
+ *     description: E-posta ve şifre ile yeni bir kullanıcı kaydı oluşturur. Aynı email tekrar kullanılamaz.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: test@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "123456"
+ *     responses:
+ *       201:
+ *         description: Kullanıcı başarıyla oluşturuldu, JWT token döner
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: Email zaten kayıtlı
+ *       500:
+ *         description: Sunucu hatası
+ */
 router.post('/register', async (req: Request, res: Response) => {
+    console.log("run register");
     const { email, password } = req.body;
     try {
         const existingUser = await User.findOne({ email });
@@ -23,7 +65,33 @@ router.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-// Login
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     summary: post login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: 123456
+ *     responses:
+ *       200:
+ *         description: Returns a token
+ */
 router.post('/login', async (req: Request, res: Response) => {
     const { email, password } = req.body;
     try {
@@ -42,7 +110,15 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-// Profile information
+/**
+ * @openapi
+ * /profile:
+ *   get:
+ *     summary: Get user profile
+ *     responses:
+ *       200:
+ *         description: Returns a user object
+ */
 router.get('/profile', protect, async (req: Request, res: Response) => {
     try {
         const user = await User.findById((req as any).user).select('-password');
